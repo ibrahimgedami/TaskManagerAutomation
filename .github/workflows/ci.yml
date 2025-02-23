@@ -1,1 +1,45 @@
+name: Swift CI
 
+on:  
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Cache Derived Data
+        uses: actions/cache@v3
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: derived-data-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            derived-data-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: |
+          if [ -f "Podfile" ]; then
+            gem install cocoapods
+            pod install
+          fi
+
+      - name: Build the Project
+        run: |
+          xcodebuild clean build -project YourProject.xcodeproj \
+          -scheme YourScheme -destination "platform=iOS Simulator,name=iPhone 14"
+
+      - name: Run Tests
+        run: |
+          xcodebuild test -project YourProject.xcodeproj \
+          -scheme YourScheme -destination "platform=iOS Simulator,name=iPhone 14" | xcpretty
