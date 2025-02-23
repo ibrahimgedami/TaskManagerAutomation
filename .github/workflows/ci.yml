@@ -36,10 +36,10 @@ jobs:
 
       - name: Build the Project
         run: |
-          xcodebuild clean build -project YourProject.xcodeproj \
+          xcodebuild clean build -project TaskManager.xcodeproj \
           -scheme YourScheme -destination "platform=iOS Simulator,name=iPhone 14"
 
       - name: Run Tests
         run: |
-          xcodebuild test -project YourProject.xcodeproj \
+          xcodebuild test -project TaskManager.xcodeproj \
           -scheme YourScheme -destination "platform=iOS Simulator,name=iPhone 14" | xcpretty
